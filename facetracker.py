@@ -18,6 +18,8 @@ if os.name == 'nt':
 else:
     parser.add_argument("-W", "--width", type=int, help="Set raw RGB width", default=640)
     parser.add_argument("-H", "--height", type=int, help="Set raw RGB height", default=360)
+if sys.platform == 'linux':
+    parser.add_argument("--dformat", type=str, help="Set which device format to use (MJPG, YUYV, RGB3, ...)", default=None)
 parser.add_argument("-F", "--fps", type=int, help="Set camera frames per second", default=24)
 parser.add_argument("-c", "--capture", help="Set camera ID (0, 1...) or video file", default="0")
 parser.add_argument("-M", "--mirror-input", action="store_true", help="Process a mirror image of the input video")
@@ -162,6 +164,8 @@ if os.name == 'nt':
     input_reader = InputReader(args.capture, args.raw_rgb, args.width, args.height, fps, use_dshowcapture=use_dshowcapture_flag, dcap=dcap)
     if args.dcap == -1 and type(input_reader) == DShowCaptureReader:
         fps = min(fps, input_reader.device.get_fps())
+elif sys.platform == 'linux' and args.dformat:
+    input_reader = InputReader(args.capture, args.raw_rgb, args.width, args.height, fps, dcap=args.dformat)
 else:
     input_reader = InputReader(args.capture, args.raw_rgb, args.width, args.height, fps)
 if type(input_reader.reader) == VideoReader:
