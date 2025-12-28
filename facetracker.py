@@ -188,9 +188,9 @@ features = ["eye_l", "eye_r", "eyebrow_steepness_l", "eyebrow_updown_l", "eyebro
 if args.log_data != "":
     log = open(args.log_data, "w")
     log.write("Frame,Time,Width,Height,FPS,Face,FaceID,RightOpen,LeftOpen,AverageConfidence,Success3D,PnPError,RotationQuat.X,RotationQuat.Y,RotationQuat.Z,RotationQuat.W,Euler.X,Euler.Y,Euler.Z,RVec.X,RVec.Y,RVec.Z,TVec.X,TVec.Y,TVec.Z")
-    for i in range(66):
+    for i in range(68):
         log.write(f",Landmark[{i}].X,Landmark[{i}].Y,Landmark[{i}].Confidence")
-    for i in range(66):
+    for i in range(70):
         log.write(f",Point3D[{i}].X,Point3D[{i}].Y,Point3D[{i}].Z")
     for feature in features:
         log.write(f",{feature}")
