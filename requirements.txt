@@ -1,0 +1,17 @@
+# =============================================================================
+# OpenSeeFace Python Dependencies
+# =============================================================================
+#
+# Install with: pip install -r requirements.txt
+#
+# Core dependencies for face tracking:
+onnxruntime          # ONNX model inference for face detection/landmarks
+opencv-python        # Camera capture and image processing
+pillow               # Image handling for GUI preview
+numpy                # Numerical operations for tracking calculations
+
+# GUI dependencies:
+# tkinter             # GUI framework (usually included with Python)
+
+# VMC Protocol support (for Warudo, VMagicMirror, etc.):
+python-osc           # OSC protocol implementation for VMC sender

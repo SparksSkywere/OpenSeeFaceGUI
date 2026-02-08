@@ -2,7 +2,7 @@ import os
 import platform
 import sys
 import numpy as np
-from ctypes import *
+from ctypes import c_char, c_void_p, c_int, c_longlong, CDLL, Structure, POINTER, byref, create_string_buffer
 from PIL import Image
 import cv2
 import json
@@ -11,8 +11,8 @@ def resolve(name):
     f = os.path.join(os.path.dirname(__file__), name)
     return f
 
-lib = None
-bm_lib = None
+lib: CDLL | None = None
+bm_lib: CDLL | None = None
 bm_options = None
 bm_enabled = False
 
@@ -49,6 +49,7 @@ class DShowCapture():
                     dll_path = resolve(os.path.join("dshowcapture", "libminibmcapture64.dll"))
                     bm_lib = cdll.LoadLibrary(dll_path)
 
+            assert lib is not None, "Library should be loaded"
             # DirectShow
             lib.create_capture.restype = c_void_p
             lib.get_devices.argtypes = [c_void_p]
@@ -246,6 +247,7 @@ class DShowCapture():
             self.bm_lib.read_frame_bgra32_blocking(self.buffer, self.size)
         else:
             return None
+        assert self.buffer is not None, "Buffer should be initialized"
         img = np.frombuffer(self.buffer, dtype=np.uint8)[0:self.real_size]
         if self.colorspace in [100, 101]:
             if self.real_size == self.height * self.width * 4:

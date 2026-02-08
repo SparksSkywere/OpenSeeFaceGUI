@@ -138,7 +138,7 @@ if args.benchmark > 0:
     im = cv2.imread(os.path.join(model_base_path, "benchmark.bin"), cv2.IMREAD_COLOR)
     results = []
     for model_type in [3, 2, 1, 0, -1, -2, -3]:
-        tracker = Tracker(224, 224, threshold=0.1, max_threads=args.max_threads, max_faces=1, discard_after=0, scan_every=0, silent=True, model_type=model_type, model_dir=args.model_dir, no_gaze=(model_type == -1), detection_threshold=0.1, use_retinaface=0, max_feature_updates=900, static_model=True if args.no_3d_adapt == 1 else False)
+        tracker = Tracker(224, 224, threshold=0.1, max_threads=args.max_threads, max_faces=1, discard_after=0, scan_every=0, silent=True, model_type=model_type, model_dir=args.model_dir, no_gaze=(model_type == -1), detection_threshold=0.1, use_retinaface=False, max_feature_updates=900, static_model=True if args.no_3d_adapt == 1 else False)
         tracker.detected = 1
         tracker.faces = [(0, 0, 224, 224)]
         total = 0.0
@@ -176,8 +176,8 @@ out = None
 first = True
 height = 0
 width = 0
-tracker = None
-sock = None
+tracker: Tracker | None = None
+sock: socket.socket | None = None
 total_tracking_time = 0.0
 tracking_time = 0.0
 tracking_frames = 0
@@ -257,6 +257,7 @@ try:
 
         try:
             inference_start = time.perf_counter()
+            assert tracker is not None, "Tracker should be initialized"
             faces = tracker.predict(frame)
             if len(faces) > 0:
                 inference_time = (time.perf_counter() - inference_start)
@@ -360,6 +361,7 @@ try:
                     log.flush()
 
             if detected and len(faces) < 40:
+                assert sock is not None, "Socket should be initialized"
                 sock.sendto(packet, (target_ip, target_port))
 
             if out is not None:

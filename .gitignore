@@ -6,3 +6,8 @@ Samples/*
 *.7z
 CSharp/*
 VSeeFace/*
+venv/
+env/
+.vscode/
+.github/
+__pycache__/

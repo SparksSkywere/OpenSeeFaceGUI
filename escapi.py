@@ -12,7 +12,7 @@ image = device.get_image()
 import os
 import platform
 import sys
-from ctypes import *
+from ctypes import c_char, c_int, POINTER, CDLL, Structure, byref
 from PIL import Image
 import numpy as np
 import cv2
@@ -52,7 +52,7 @@ class SimpleCapParms(Structure):
     ]
 
 
-lib = None
+lib: CDLL | None = None
 
 
 def init():
@@ -71,6 +71,7 @@ def init():
     lib.initCOM()
 
 def count_capture_devices():
+    assert lib is not None, "Library should be initialized"
     return lib.countCaptureDevices()
 
 def device_name(device):
@@ -79,6 +80,7 @@ def device_name(device):
     :param device: The number of the device
     :return: The name of the device
     """
+    assert lib is not None, "Library should be initialized"
     namearry = (c_char * 256)()
     lib.getCaptureDeviceName(device, namearry, 256)
     camearaname = namearry.value
@@ -86,6 +88,7 @@ def device_name(device):
 
 def init_camera(device, width, height, fps):
     global devices
+    assert lib is not None, "Library should be initialized"
     array = (width * height * c_int)()
     options = SimpleCapParms()
     options.width = width
@@ -96,9 +99,11 @@ def init_camera(device, width, height, fps):
     return array
 
 def do_capture(device):
+    assert lib is not None, "Library should be initialized"
     lib.doCapture(device)
 
 def is_capture_done(device):
+    assert lib is not None, "Library should be initialized"
     return lib.isCaptureDone(device)
 
 def read(device, width, height, array):
@@ -111,6 +116,7 @@ def read(device, width, height, array):
         return None
 
 def get_image(device, width, height, array):
+    assert lib is not None, "Library should be initialized"
     lib.doCapture(device)
 
     while lib.isCaptureDone(device) == 0:
@@ -122,4 +128,5 @@ def get_image(device, width, height, array):
     return img
 
 def deinit_camera(device):
+    assert lib is not None, "Library should be initialized"
     lib.deinitCapture(device)
